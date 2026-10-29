@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fluid Mechanics Exam 🌊</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Outfit:wght@400;500;600;700;800&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F5FB; --card:#FFFFFF; --primary:#6C5CE7; --primary-soft:#EFEDFC;
+  --green:#00B894; --green-soft:#E6F9F3; --red:#E17055; --red-soft:#FDEDEA;
+  --ink:#0F172A; --muted:#64748B; --border:#E9E6F8; --amber:#FDCB6E;
+  --radius:20px;
+  --shadow:0 12px 34px rgba(108,92,231,.14);
+  --shadow-sm:0 4px 14px rgba(15,23,42,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Cairo',-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;
+  background:var(--bg); color:var(--ink); min-height:100vh; overflow-x:hidden;
+}
+.en{font-family:'Outfit','Work Sans',-apple-system,sans-serif; direction:ltr; unicode-bidi:isolate}
+
+/* ===== background blobs ===== */
+.blob{position:fixed; border-radius:50%; filter:blur(90px); opacity:.5; z-index:0; pointer-events:none; animation:float 14s ease-in-out infinite}
+.blob.b1{width:420px;height:420px;background:#DCD6FA;top:-120px;right:-120px}
+.blob.b2{width:360px;height:360px;background:#CFF5EA;bottom:-100px;left:-100px;animation-delay:-5s}
+.blob.b3{width:260px;height:260px;background:#FFE9D6;top:40%;left:60%;animation-delay:-9s}
+@keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-30px) scale(1.06)}}
+
+.wrap{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:32px 18px 80px}
+
+/* ===== header ===== */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.15rem}
+.brand .logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#6C5CE7,#8E7CF3);display:grid;place-items:center;font-size:1.4rem;box-shadow:var(--shadow-sm);animation:wiggle 4s ease-in-out infinite}
+@keyframes wiggle{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(5deg)}}
+.pill{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:8px 16px;font-weight:800;font-size:.9rem;color:var(--muted);box-shadow:var(--shadow-sm)}
+.pill b{color:var(--primary)}
+
+/* ===== screens ===== */
+.screen{display:none;animation:screenIn .55s cubic-bezier(.22,1,.36,1)}
+.screen.active{display:block}
+@keyframes screenIn{from{opacity:0;transform:translateY(26px) scale(.985)}to{opacity:1;transform:none}}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:34px}
+
+/* ===== start screen ===== */
+.hero{text-align:center;padding:44px 30px}
+.hero .wave{font-size:4rem;display:inline-block;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.hero h1{font-size:2.1rem;font-weight:900;margin:14px 0 6px}
+.hero h1 span{background:linear-gradient(135deg,#6C5CE7,#00B894);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .sub{color:var(--muted);font-weight:700;margin-bottom:26px}
+.field{text-align:right;max-width:420px;margin:0 auto 20px}
+.field label{display:block;font-weight:800;margin-bottom:8px;font-size:.95rem}
+.field input{width:100%;padding:15px 18px;border-radius:14px;border:2px solid var(--border);font-family:inherit;font-size:1.05rem;font-weight:700;background:#FBFAFF;transition:.25s;outline:none;text-align:center}
+.field input:focus{border-color:var(--primary);box-shadow:0 0 0 4px var(--primary-soft)}
+.info-chips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:26px}
+.chip{background:var(--primary-soft);color:var(--primary);font-weight:800;font-size:.85rem;padding:8px 16px;border-radius:999px}
+.chip.g{background:var(--green-soft);color:var(--green)}
+.warn{background:linear-gradient(135deg,#FFF7E6,#FFEFD2);border:1.5px dashed #F5C26B;color:#8A5A00;font-weight:800;border-radius:16px;padding:14px 18px;max-width:520px;margin:0 auto 28px;font-size:.98rem;animation:pulseWarn 2.6s ease-in-out infinite}
+@keyframes pulseWarn{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+.btn{border:none;cursor:pointer;font-family:inherit;font-weight:900;font-size:1.1rem;border-radius:16px;padding:16px 44px;transition:transform .18s ease-out, box-shadow .18s ease-out;background:linear-gradient(135deg,#6C5CE7,#8E7CF3);color:#fff;box-shadow:0 10px 26px rgba(108,92,231,.4)}
+.btn:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(108,92,231,.45)}
+.btn:active{transform:scale(.96)}
+.btn.big{font-size:1.25rem;padding:18px 56px}
+.btn.ghost{background:#fff;color:var(--primary);border:2px solid var(--primary);box-shadow:none}
+.btn.green{background:linear-gradient(135deg,#00B894,#02D1A8);box-shadow:0 10px 26px rgba(0,184,148,.4)}
+
+/* ===== progress ===== */
+.prog-wrap{margin-bottom:20px}
+.prog-meta{display:flex;justify-content:space-between;font-weight:800;color:var(--muted);font-size:.88rem;margin-bottom:8px}
+.prog{height:12px;background:#E9E6F8;border-radius:999px;overflow:hidden}
+.prog > i{display:block;height:100%;width:0;background:linear-gradient(90deg,#6C5CE7,#00B894);border-radius:999px;transition:width .5s cubic-bezier(.22,1,.36,1)}
+
+/* ===== question card ===== */
+.qhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.qnum{background:var(--primary-soft);color:var(--primary);font-weight:900;padding:7px 18px;border-radius:999px;font-size:.92rem}
+.qtag{background:var(--green-soft);color:var(--green);font-weight:800;font-size:.78rem;padding:5px 14px;border-radius:999px}
+.qtext{font-size:1.28rem;font-weight:700;line-height:1.9;margin-bottom:24px}
+.opts{display:grid;gap:12px}
+.opt{display:flex;align-items:center;gap:14px;background:#FBFAFF;border:2px solid var(--border);border-radius:16px;padding:15px 18px;cursor:pointer;transition:all .22s ease-out;text-align:left;direction:ltr}
+.opt:hover{border-color:var(--primary);transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+.opt .key{width:34px;height:34px;min-width:34px;border-radius:10px;background:#fff;border:2px solid var(--border);display:grid;place-items:center;font-weight:800;font-family:'Outfit';color:var(--muted);transition:.22s}
+.opt .val{font-family:'Outfit','Work Sans';font-weight:600;font-size:1.02rem;color:var(--ink)}
+.opt.sel{border-color:var(--primary);background:var(--primary-soft)}
+.opt.sel .key{background:var(--primary);border-color:var(--primary);color:#fff;transform:scale(1.08)}
+.opt.correct{border-color:var(--green);background:var(--green-soft)}
+.opt.correct .key{background:var(--green);border-color:var(--green);color:#fff}
+.opt.wrong{border-color:var(--red);background:var(--red-soft)}
+.opt.wrong .key{background:var(--red);border-color:var(--red);color:#fff}
+.opt.lock{pointer-events:none}
+
+.qnav{display:flex;justify-content:space-between;align-items:center;margin-top:26px;gap:10px;flex-wrap:wrap}
+.btn.sm{font-size:.95rem;padding:12px 26px}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+.dots{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:26px}
+.dot{width:36px;height:36px;border-radius:12px;border:2px solid var(--border);background:#fff;font-weight:800;font-family:'Outfit';font-size:.85rem;color:var(--muted);cursor:pointer;transition:.2s}
+.dot:hover{border-color:var(--primary)}
+.dot.ans{background:var(--primary);border-color:var(--primary);color:#fff;transform:scale(1.06)}
+.dot.cur{outline:3px solid var(--primary-soft)}
+
+/* ===== result ===== */
+.score-ring{width:210px;height:210px;margin:10px auto 6px;position:relative}
+.score-ring svg{transform:rotate(-90deg)}
+.score-ring .bgc{stroke:#EDEAFB;fill:none;stroke-width:16}
+.score-ring .fgc{stroke:url(#gradScore);fill:none;stroke-width:16;stroke-linecap:round;stroke-dasharray:565.5;stroke-dashoffset:565.5;transition:stroke-dashoffset 1.6s cubic-bezier(.22,1,.36,1)}
+.score-num{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.score-num .pct{font-size:2.9rem;font-weight:900;font-family:'Outfit';line-height:1}
+.score-num .lbl{color:var(--muted);font-weight:800;font-size:.9rem}
+.grade-card{border-radius:18px;padding:22px 26px;margin:22px 0;font-size:1.25rem;font-weight:900;text-align:center;line-height:1.9;animation:pop .6s cubic-bezier(.34,1.56,.64,1) both .5s}
+@keyframes pop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
+.grade-a{background:linear-gradient(135deg,#E6F9F3,#D2F5E8);border:2px solid #7FE3C6;color:#00795F}
+.grade-b{background:linear-gradient(135deg,#EFEDFC,#E2DCFB);border:2px solid #B7A9F5;color:#4C3BB8}
+.grade-c{background:linear-gradient(135deg,#FDEDEA,#FBDCD5);border:2px solid #F5B0A0;color:#A8401F}
+.res-stats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:10px 0 6px}
+.stat{background:#FBFAFF;border:1px solid var(--border);border-radius:14px;padding:12px 24px;text-align:center;font-weight:800}
+.stat .n{font-size:1.5rem;font-family:'Outfit';font-weight:800}
+.stat.g .n{color:var(--green)} .stat.r .n{color:var(--red)} .stat.p .n{color:var(--primary)}
+
+.review{margin-top:34px;display:grid;gap:16px}
+.rev-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px 22px;box-shadow:var(--shadow-sm);animation:screenIn .5s ease both}
+.rev-card .rq{font-weight:700;font-size:1.05rem;margin-bottom:12px;line-height:1.8}
+.rev-line{display:flex;gap:10px;align-items:flex-start;font-weight:700;font-size:.95rem;padding:9px 14px;border-radius:12px;margin-top:8px;flex-wrap:wrap}
+.rev-line.ok{background:var(--green-soft);color:#00795F}
+.rev-line.bad{background:var(--red-soft);color:#A8401F}
+.rev-line.exp{background:#F4F5FB;color:var(--muted);font-weight:600}
+.hidden{display:none!important}
+
+footer{text-align:center;color:var(--muted);font-weight:700;margin-top:44px;font-size:.85rem}
+
+/* confetti */
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
+
+
+/* ===== developer contact buttons ===== */
+.dev-contact{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px}
+.dev-btn{display:inline-flex;align-items:center;gap:10px;padding:13px 24px;border-radius:999px;font-family:'Outfit';font-weight:700;font-size:.98rem;color:#fff;text-decoration:none;transition:transform .18s ease-out, box-shadow .18s ease-out;box-shadow:var(--shadow-sm)}
+.dev-btn:hover{transform:translateY(-3px) scale(1.03)}
+.dev-btn:active{transform:scale(.97)}
+.dev-btn.wa{background:linear-gradient(135deg,#25D366,#128C7E)}
+.dev-btn.tg{background:linear-gradient(135deg,#2AABEE,#229ED9)}
+.dev-btn svg{width:22px;height:22px;fill:#fff;flex-shrink:0}
+.dev-label{text-align:center;color:var(--muted);font-weight:800;font-size:.9rem;margin-top:26px}
+
+
+/* ===== ask box (result screen) ===== */
+.ask-box{background:linear-gradient(135deg,#EFEDFC,#E7F9F3);border:2px dashed #B7A9F5;border-radius:18px;padding:20px 24px;margin-top:18px;animation:pop .6s cubic-bezier(.34,1.56,.64,1) both .6s}
+.ask-title{font-weight:900;font-size:1.08rem;color:#4C3BB8;margin-bottom:14px}
+.ask-btn{margin-top:0}
+
+
+/* ===== certificate ===== */
+#certBox{margin-top:24px}
+#certBox canvas{max-width:100%;border-radius:18px;box-shadow:0 14px 34px rgba(15,23,42,.18);animation:pop .7s cubic-bezier(.34,1.56,.64,1) both .4s}
+.cert-actions{margin-top:14px}
+
+@media(max-width:560px){
+  .card{padding:24px 18px}
+  .hero h1{font-size:1.6rem}
+  .qtext{font-size:1.08rem}
+  .btn.big{width:100%}
+}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand"><div class="logo">🌊</div><div>امتحان ميكانيكا الموائع<br><span class="en" style="font-size:.72rem;color:var(--muted);font-weight:600">Fluid Mechanics — Ch.1 & 2</span></div></div>
+    <div class="pill">⏱️ الوقت: <b id="timer">00:00</b></div>
+  </div>
+
+  <!-- ========= START ========= -->
+  <section id="startScreen" class="screen active">
+    <div class="card hero">
+      <span class="wave">🌊</span>
+      <h1>امتحان <span class="en">Fluid Mechanics</span></h1>
+      <div class="info-chips">
+        <span class="chip">📝 <span class="en">42</span> سؤال</span>
+      </div>
+      <div class="field" style="text-align:center">
+        <label>✍️ اكتب اسمك هنا (اختياري بس يبقى أحلى)</label>
+        <input type="text" id="studentName" placeholder="اسمك يا بطل..." maxlength="30">
+      </div>
+      <div class="warn">⚠️ لو انت غشيت طنطاوي هيعرف وهيقفشك 😉</div>
+      <button class="btn big" onclick="startExam()">ابدأ الامتحان 🚀</button>
+      <div class="dev-label" style="margin-top:30px">Contact the Developer 👨‍💻</div>
+      <div class="dev-contact">
+        <a class="dev-btn wa" href="https://wa.me/201091139568" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg><span>WhatsApp</span></a>
+        <a class="dev-btn tg" href="https://t.me/HRBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg><span>Telegram</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========= QUIZ ========= -->
+  <section id="quizScreen" class="screen">
+    <div class="prog-wrap">
+      <div class="prog-meta"><span>السؤال <b id="curQ">1</b> من <b>42</b></span><span>أجبت على <b id="ansCount">0</b> ✍️</span></div>
+      <div class="prog"><i id="progBar"></i></div>
+    </div>
+    <div class="card">
+      <div class="qhead">
+        <span class="qnum" id="qNum">سؤال 1</span>
+        <span class="qtag" id="qTag">🧮 حسابي</span>
+      </div>
+      <div class="qtext en" id="qText"></div>
+      <div class="opts" id="optsBox"></div>
+      <div class="qnav">
+        <button class="btn ghost sm" id="prevBtn" onclick="nav(-1)">→ السابق</button>
+        <button class="btn sm" id="nextBtn" onclick="nav(1)">التالي ←</button>
+      </div>
+    </div>
+    <div class="dots" id="dotsBox"></div>
+    <div style="text-align:center;margin-top:26px">
+      <button class="btn green big" onclick="submitExam()">Submit &amp; See My Score 🏁</button>
+    </div>
+  </section>
+
+  <!-- ========= RESULT ========= -->
+  <section id="resultScreen" class="screen">
+    <div class="card" style="text-align:center">
+      <h2 style="font-size:1.7rem;font-weight:900" id="resTitle">النتيجة 🎯</h2>
+      <div class="score-ring">
+        <svg width="210" height="210" viewBox="0 0 210 210">
+          <defs><linearGradient id="gradScore" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#6C5CE7"/><stop offset="100%" stop-color="#00B894"/>
+          </linearGradient></defs>
+          <circle class="bgc" cx="105" cy="105" r="90"/>
+          <circle class="fgc" id="ringFg" cx="105" cy="105" r="90"/>
+        </svg>
+        <div class="score-num"><div><div class="pct" id="pctTxt">0%</div><div class="lbl">نتيجتك</div></div></div>
+      </div>
+      <div class="res-stats">
+        <div class="stat g"><div class="n" id="okN">0</div>✅ صح</div>
+        <div class="stat r"><div class="n" id="badN">0</div>❌ غلط</div>
+        <div class="stat p"><div class="n" id="totN">0</div>📝 إجمالي</div>
+      </div>
+      <div class="grade-card" id="gradeCard"></div>
+      <div class="ask-box">
+        <div class="ask-title">💬 لو محتاج تسأل أو تستفسر عن أي حاجة ابعتلي</div>
+        <a class="dev-btn wa ask-btn" href="https://wa.me/201091139568" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg><span>WhatsApp</span></a>
+      </div>
+      <div id="certBox"></div>
+      <button class="btn ghost" style="margin-top:18px" onclick="location.reload()">🔄 اعمل الامتحان تاني</button>
+    </div>
+
+    <h3 style="margin:36px 0 6px;font-size:1.3rem;font-weight:900;text-align:center">📋 مراجعة الإجابات</h3>
+    <p style="text-align:center;color:var(--muted);font-weight:700;margin-bottom:16px">شوف كل سؤال وإجابتك والإجابة الصح</p>
+    <div class="review" id="reviewBox"></div>
+    <div class="dev-label" style="margin-top:40px">Contact the Developer 👨‍💻</div>
+      <div class="dev-contact">
+        <a class="dev-btn wa" href="https://wa.me/201091139568" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg><span>WhatsApp</span></a>
+        <a class="dev-btn tg" href="https://t.me/HRBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg><span>Telegram</span></a>
+      </div>
+    <footer>صُنع بحب ❤️ • بالتوفيق يا وحش 💪</footer>
+  </section>
+</div>
+
+<script>
+/* ================= QUESTIONS — كلها مقتبسة من ملف الـ PDF (الفصل 1 & 2) ================= */
+const Q = [
+ /* ===== 7 أسئلة تعريفات (من الملف) ===== */
+ {q:"Fluid mechanics is defined as the science that deals with:",
+  opts:["Only the flow of water in pipes","The behavior of fluids at rest or in motion and their interaction with solids or other fluids at the boundaries","Only gases moving at high speeds","The study of solid deformations"], a:1, tag:"def", exp:"Sec. 1.1 — includes fluid statics and fluid dynamics"},
+ {q:"Density is defined as:",
+  opts:["Weight per unit volume","Mass per unit volume","Volume per unit mass","Force per unit area"], a:1, tag:"def", exp:"ρ = m/V (kg/m³) — Sec. 2.2"},
+ {q:"Specific weight (weight density) of a substance is:",
+  opts:["Mass per unit volume","The weight of a unit volume of the substance, γs = ρg","The ratio of its density to that of water","Energy per unit mass"], a:1, tag:"def", exp:"γs = ρg (N/m³) — Sec. 2.2"},
+ {q:"Viscosity is best described as:",
+  opts:["The property representing the internal resistance of a fluid to motion","The weight of the fluid per unit volume","The pressure exerted by a vapor","The ability of a fluid to form a free surface"], a:0, tag:"def", exp:"Measure of internal 'stickiness' — caused by cohesive forces and molecular collisions (Sec. 2.6)"},
+ {q:"Surface tension is defined as:",
+  opts:["Pressure inside a droplet","The pulling force acting parallel to the liquid surface per unit length","The weight of the liquid film","The friction force between two fluid layers"], a:1, tag:"def", exp:"σs = F/2b (N/m); also surface energy per unit area (Sec. 2.7)"},
+ {q:"The vapor pressure of a pure substance is:",
+  opts:["The pressure exerted by its vapor in phase equilibrium with its liquid at a given temperature","The pressure of a gas mixture","The atmospheric pressure","The pressure at the critical point"], a:0, tag:"def", exp:"Pv = Psat — identical to the saturation pressure (Sec. 2.3)"},
+ {q:"Cavitation is:",
+  opts:["The planned boiling of water in a kettle","Unplanned vaporization when liquid pressure drops below the vapor pressure, forming bubbles that collapse and damage surfaces","The condensation of vapor into liquid","The increase of pressure due to heating"], a:1, tag:"def", exp:"Common cause of performance drop and erosion of impeller blades (Sec. 2.3)"},
+ /* ===== 10 أسئلة حسابية سهلة (من الملف) ===== */
+ {q:"A fluid occupies a volume of 24 L and weighs 225 N where g = 9.80 m/s². Determine the mass of the fluid.",
+  opts:["22.96 kg","220.5 kg","2250 kg","2.25 kg"], a:0, tag:"calc", exp:"m = W/g = 225/9.80 = 22.96 kg (Prob. 2–1)"},
+ {q:"What is the weight, in N, of a 200-kg object where g = 9.6 m/s²?",
+  opts:["2083 N","19.2 N","200 N","1920 N"], a:3, tag:"calc", exp:"W = mg = (200)(9.6) = 1920 N (Prob. 1–14)"},
+ {q:"A tank of volume 2 m³ is filled with oil of density 850 kg/m³. Determine the mass of the oil.",
+  opts:["1700 kg","425 kg","850 kg","3400 kg"], a:0, tag:"calc", exp:"m = ρV = (850)(2) = 1700 kg (Ex. 1–3)"},
+ {q:"A wind turbine rated at 30 kW operates 2200 hours/year at rated power. The energy generated per year is:",
+  opts:["6600 kWh","66,000 kWh","1320 kWh","660,000 kWh"], a:1, tag:"calc", exp:"E = (30 kW)(2200 h) = 66,000 kWh (Ex. 1–2)"},
+ {q:"Air has a density of 1.17 kg/m³. Using ρH₂O = 1000 kg/m³, its specific gravity is:",
+  opts:["0.117","0.0117","0.00117","1.17"], a:2, tag:"calc", exp:"SG = ρ/ρH₂O = 1.17/1000 = 0.00117 (Ex. 2–1)"},
+ {q:"A room of 4 m × 5 m × 6 m (V = 120 m³) contains air of density 1.17 kg/m³. The mass of air is:",
+  opts:["120 kg","14 kg","1170 kg","140 kg"], a:3, tag:"calc", exp:"m = ρV = (1.17)(120) ≈ 140 kg (Ex. 2–1)"},
+ {q:"In a water system the temperature reaches 30°C (Pv = 4.25 kPa). The minimum pressure to avoid cavitation is:",
+  opts:["4.25 kPa","42.5 kPa","0.425 kPa","425 kPa"], a:0, tag:"calc", exp:"Pmin = Psat@30°C = 4.25 kPa (Ex. 2–2)"},
+ {q:"A flow has Mach number Ma = 2 with c = 346 m/s. The flow speed is:",
+  opts:["173 m/s","692 m/s","348 m/s","3460 m/s"], a:1, tag:"calc", exp:"V = Ma × c = 2 × 346 = 692 m/s (Sec. 1.4)"},
+ {q:"Using ρ = 1000 kg/m³ and g = 9.807 m/s², the specific weight of water is:",
+  opts:["980.7 N/m³","98.07 N/m³","9807 N/m³","9.807 N/m³"], a:2, tag:"calc", exp:"γs = ρg = (1000)(9.807) = 9807 N/m³ (Sec. 2.2)"},
+ {q:"Using 1 lbm = 0.45359 kg, a mass of 10 lbm equals:",
+  opts:["22.046 kg","0.4536 kg","45.359 kg","4.5359 kg"], a:3, tag:"calc", exp:"10 × 0.45359 = 4.5359 kg (Sec. 1–6)"},
+
+ /* ===== 25 سؤال نظري (من الملف) ===== */
+ {q:"What distinguishes a fluid from a solid?",
+  opts:["A fluid deforms continuously under shear stress, no matter how small","A fluid cannot resist normal stress","A solid deforms continuously under shear stress","A fluid always has a free surface"], a:0, tag:"theory", exp:"Solids: stress ∝ strain. Fluids: stress ∝ strain rate (Sec. 1.2)"},
+ {q:"According to the no-slip condition, a fluid in direct contact with a solid surface:",
+  opts:["Slips freely along the surface","Comes to a complete stop (zero velocity relative to the surface)","Always moves faster than the surface","Boils at the surface"], a:1, tag:"theory", exp:"The fluid 'sticks' to the surface; caused by viscosity (Sec. 1.3)"},
+ {q:"The flow region adjacent to a wall where viscous effects are significant is called the:",
+  opts:["Wake region","Boundary layer","Free stream","Control surface"], a:1, tag:"theory", exp:"Boundary layer — consequence of the no-slip condition (Sec. 1.3)"},
+ {q:"The flow of air over aircraft wings is ____, while the flow of gases through a jet engine is ____.",
+  opts:["internal; external","external; internal","internal; internal","external; external"], a:1, tag:"theory", exp:"Flow over a surface = external; flow in a confined duct = internal (Prob. 1–2)"},
+ {q:"Open-channel flow is defined as:",
+  opts:["Flow completely bounded by solid surfaces","Flow in a duct partially filled with liquid and having a free surface","Flow of gas through a nozzle","Flow over an exposed pipe on a windy day"], a:1, tag:"theory", exp:"Partially filled duct with a free surface (Prob. 1–4)"},
+ {q:"A flow is called incompressible when:",
+  opts:["The fluid is a liquid","The density remains nearly constant throughout","The Mach number is greater than 1","The pressure is constant everywhere"], a:1, tag:"theory", exp:"Incompressibility = nearly constant density (Sec. 1.4 / Prob. 1–3)"},
+ {q:"Must the flow of a compressible fluid (a gas) necessarily be treated as compressible?",
+  opts:["Yes, always","No — at Ma < 0.3 density changes are under about 5% and incompressible approximation works","Only for heavy gases","Only above the critical temperature"], a:1, tag:"theory", exp:"Gas flows can be approximated incompressible for Ma < 0.3 (Sec. 1.4)"},
+ {q:"The Mach number is defined as:",
+  opts:["Ma = c/V","Ma = V/c","Ma = V × c","Ma = ρV/P"], a:1, tag:"theory", exp:"Ma = (Speed of flow)/(Speed of sound) (Sec. 1.4)"},
+ {q:"A Mach number of 2 indicates:",
+  opts:["Subsonic flow","Sonic flow","Supersonic flow","Incompressible flow"], a:2, tag:"theory", exp:"Ma > 1 is supersonic (Sec. 1.4)"},
+ {q:"Highly disordered fluid motion with velocity fluctuations, typically at high velocities and in low-viscosity fluids, is called:",
+  opts:["Laminar flow","Transitional flow","Turbulent flow","Steady flow"], a:2, tag:"theory", exp:"Smooth ordered = laminar; chaotic = turbulent (Sec. 1.4)"},
+ {q:"Flow caused by winds is classified as:",
+  opts:["Natural (unforced) flow","Forced flow","Steady flow","Open-channel flow"], a:1, tag:"theory", exp:"Fluid forced to flow by external means (fan/wind/pump) = forced flow (Prob. 1–9)"},
+ {q:"A steady flow is one in which:",
+  opts:["Properties change with location only","Properties at a point do not change with time","The velocity is zero everywhere","The fluid must be a liquid"], a:1, tag:"theory", exp:"Steady = no change at a point with time (Prob. 1–10)"},
+ {q:"A control volume is:",
+  opts:["A fixed amount of mass chosen for study","A selected region in space through which mass and energy can cross the boundary","A system that allows no energy transfer","Always isolated"], a:1, tag:"theory", exp:"Open system: mass + energy cross the boundary (Prob. 1–11)"},
+ {q:"Which of the following is an intensive property?",
+  opts:["Total mass","Total volume","Temperature","Total momentum"], a:2, tag:"theory", exp:"Intensive properties are independent of system mass (Sec. 2.1)"},
+ {q:"The state postulate states that the state of a simple compressible system is completely specified by:",
+  opts:["One intensive property","Two independent intensive properties","Three extensive properties","Pressure alone"], a:1, tag:"theory", exp:"Two independent intensive properties fix the state (Sec. 2.1)"},
+ {q:"Specific gravity of a substance is the ratio of its density to:",
+  opts:["The density of air at 0°C","The density of water at 4°C","The density of mercury","Its density at the critical point"], a:1, tag:"theory", exp:"Standard substance: water at 4°C, ρ = 1000 kg/m³ (Sec. 2.2)"},
+ {q:"The vapor pressure of a pure substance equals:",
+  opts:["Its partial pressure in any mixture","Its saturation pressure at the given temperature","The atmospheric pressure","The critical pressure"], a:1, tag:"theory", exp:"Pv = Psat during phase equilibrium (Sec. 2.3)"},
+ {q:"Cavitation occurs when:",
+  opts:["Liquid pressure rises above the vapor pressure","Liquid pressure drops below the vapor pressure, causing unplanned vaporization","The liquid temperature drops below 0°C","Dissolved air is released at high pressure"], a:1, tag:"theory", exp:"Bubbles form where P < Pv, then collapse and damage surfaces (Sec. 2.3)"},
+ {q:"Cavitation in pumps and hydraulic turbines commonly causes:",
+  opts:["Improved efficiency","Drop in performance and erosion of impeller blades","Increased viscosity","A rise in vapor pressure"], a:1, tag:"theory", exp:"Vibrations, noise, erosion and pitting (Sec. 2.3)"},
+ {q:"Enthalpy of a flowing fluid is defined as:",
+  opts:["h = u − Pv","h = u + Pv","h = ke + pe","h = ρ/P"], a:1, tag:"theory", exp:"h = u + P/ρ; includes flow (push) work (Sec. 2.4)"},
+ {q:"For incompressible substances (liquids), the specific heats cp and cv are:",
+  opts:["Very different from each other","Identical: cp ≅ cv ≅ c","Both equal to zero","Both equal to the gas constant R"], a:1, tag:"theory", exp:"cp ≅ cv for liquids (Sec. 2.4)"},
+ {q:"A large value of the bulk modulus of elasticity κ indicates that:",
+  opts:["The fluid is easily compressed","A large pressure change is needed for a small volume change — the fluid is essentially incompressible","The fluid is an ideal gas","The fluid has high viscosity"], a:1, tag:"theory", exp:"Large κ ≈ incompressible, typical of liquids (Sec. 2.5)"},
+ {q:"For an ideal gas, the coefficient of volume expansion β equals:",
+  opts:["The pressure P","The inverse of the absolute temperature, 1/T","The density ρ","The bulk modulus κ"], a:1, tag:"theory", exp:"βideal gas = 1/T (Sec. 2.5)"},
+ {q:"Fluids for which the rate of deformation is linearly proportional to the shear stress are called:",
+  opts:["Non-Newtonian fluids","Newtonian fluids","Ideal fluids","Inviscid fluids"], a:1, tag:"theory", exp:"Water, air, gasoline and oils are Newtonian; blood is not (Sec. 2.6)"},
+ {q:"The surface tension of a liquid generally:",
+  opts:["Increases with temperature","Decreases with temperature and becomes zero at the critical point","Is independent of temperature","Increases with pressure"], a:1, tag:"theory", exp:"σs decreases with T; no liquid–vapor interface above critical point (Sec. 2.7)"}
+];
+
+const LETTERS = ["A","B","C","D"];
+let cur = 0, answers = new Array(Q.length).fill(null), submitted = false, studentName = '';
+let seconds = 0, timerInt = null;
+
+function startExam(){
+  studentName = document.getElementById('studentName').value.trim();
+  if(studentName){ document.getElementById('resTitle').textContent = `نتيجتك يا ${studentName} 🎯`; }
+  document.getElementById('startScreen').classList.remove('active');
+  document.getElementById('quizScreen').classList.add('active');
+  timerInt = setInterval(()=>{ seconds++;
+    const m = String(Math.floor(seconds/60)).padStart(2,'0'), s = String(seconds%60).padStart(2,'0');
+    document.getElementById('timer').textContent = `${m}:${s}`;
+  },1000);
+  render(); renderDots();
+}
+
+function render(){
+  const q = Q[cur];
+  document.getElementById('qNum').textContent = `سؤال ${cur+1} / ${Q.length}`;
+  document.getElementById('curQ').textContent = cur+1;
+  document.getElementById('ansCount').textContent = answers.filter(a=>a!==null).length;
+  document.getElementById('progBar').style.width = (answers.filter(a=>a!==null).length/Q.length*100)+'%';
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('qTag').textContent = q.tag==='theory' ? '📖 نظري' : (q.tag==='def' ? '📚 تعريف' : '🧮 حسابي');
+  const box = document.getElementById('optsBox');
+  box.innerHTML = '';
+  q.opts.forEach((opt,i)=>{
+    const d = document.createElement('div');
+    d.className = 'opt' + (answers[cur]===i?' sel':'');
+    d.innerHTML = `<span class="key">${LETTERS[i]}</span><span class="val"></span>`;
+    d.querySelector('.val').textContent = opt;
+    d.onclick = ()=>{ if(submitted) return; answers[cur]=i; render(); renderDots();
+      setTimeout(()=>{ if(cur<Q.length-1){cur++; render(); renderDots();} }, 320); };
+    box.appendChild(d);
+  });
+  document.getElementById('prevBtn').disabled = cur===0;
+  document.getElementById('nextBtn').textContent = cur===Q.length-1 ? 'آخر سؤال 🏁' : 'التالي ←';
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('cur', i===cur));
+  if(window.gsap){ gsap.fromTo('#optsBox .opt',{opacity:0,y:14},{opacity:1,y:0,duration:.35,stagger:.06,ease:'back.out(1.4)'}); }
+}
+
+function nav(dir){
+  const n = cur+dir;
+  if(n>=0 && n<Q.length){ cur=n; render(); renderDots(); }
+}
+
+function renderDots(){
+  const box = document.getElementById('dotsBox');
+  box.innerHTML='';
+  Q.forEach((_,i)=>{
+    const d = document.createElement('button');
+    d.className = 'dot' + (answers[i]!==null?' ans':'') + (i===cur?' cur':'');
+    d.textContent = i+1;
+    d.onclick = ()=>{ cur=i; render(); renderDots(); };
+    box.appendChild(d);
+  });
+}
+
+function submitExam(){
+  const un = answers.filter(a=>a===null).length;
+  if(un>0 && !confirm(`لسه عندك ${un} أسئلة من غير إجابة! متأكد إنك عايز تسلم؟ 🤨`)) return;
+  submitted = true; clearInterval(timerInt);
+  document.getElementById('quizScreen').classList.remove('active');
+  document.getElementById('resultScreen').classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  let ok=0; answers.forEach((a,i)=>{ if(a===Q[i].a) ok++; });
+  const pct = Math.round(ok/Q.length*100);
+  document.getElementById('okN').textContent = ok;
+  document.getElementById('badN').textContent = Q.length-ok;
+  document.getElementById('totN').textContent = Q.length;
+  setTimeout(()=>{ document.getElementById('ringFg').style.strokeDashoffset = 565.5*(1-pct/100); },150);
+  // count-up %
+  let c=0; const int=setInterval(()=>{ c+=2; if(c>=pct){c=pct;clearInterval(int);} document.getElementById('pctTxt').textContent=c+'%'; },28);
+
+  const gc = document.getElementById('gradeCard');
+  let grade,msg;
+  if(pct>=85){ grade='grade-a'; msg='🅰️ Grade A<br>🌟 ماشاءالله يبني مكانك كلية طب والله 👏'; fireConfetti(); }
+  else if(pct>=70){ grade='grade-b'; msg='🅱️ Grade B<br>💪 كويس يبني والله بس في احسن من كدا'; }
+  else { grade='grade-c'; msg='🅲 Grade C<br>😔 انت مش نافع كدا وهتشيل المادة'; }
+  gc.className = 'grade-card '+grade;
+  gc.innerHTML = msg;
+  drawCertificate(studentName || 'البطل المجهول', pct, pct>=85?'A':(pct>=70?'B':'C'));
+
+  // review
+  const rb = document.getElementById('reviewBox');
+  Q.forEach((q,i)=>{
+    const userA = answers[i];
+    const card = document.createElement('div');
+    card.className='rev-card';
+    card.innerHTML = `<div class="rq"><span class="en">Q${i+1}. </span><span class="en">${q.q}</span></div>`;
+    const lineUser = document.createElement('div');
+    if(userA===null){ lineUser.className='rev-line bad'; lineUser.innerHTML='✍️ إجابتك: <b class="en">— (مفيش إجابة)</b>'; }
+    else if(userA===q.a){ lineUser.className='rev-line ok'; lineUser.innerHTML=`✅ إجابتك: <b class="en">${LETTERS[userA]}) ${q.opts[userA]}</b>`; }
+    else { lineUser.className='rev-line bad'; lineUser.innerHTML=`❌ إجابتك: <b class="en">${LETTERS[userA]}) ${q.opts[userA]}</b>`; }
+    const lineOk = document.createElement('div');
+    lineOk.className='rev-line ok';
+    lineOk.innerHTML = `✔️ الصح: <b class="en">${LETTERS[q.a]}) ${q.opts[q.a]}</b>`;
+    const lineExp = document.createElement('div');
+    lineExp.className='rev-line exp';
+    lineExp.innerHTML = `💡 <b>${q.exp}</b>`;
+    card.appendChild(lineUser); card.appendChild(lineOk); card.appendChild(lineExp);
+    rb.appendChild(card);
+  });
+}
+
+/* ===== confetti ===== */
+
+/* ===== certificate generator ===== */
+function drawCertificate(name, pct, gKey){
+  const box = document.getElementById('certBox');
+  box.innerHTML = '';
+  const cv = document.createElement('canvas');
+  cv.width = 1000; cv.height = 720;
+  const x = cv.getContext('2d');
+
+  const T = {
+    A:{bg:['#FFF9E8','#E9FBF2'], border:'#D4AF37', inner:'#B8963E', emoji:'👑',
+       title:'شهادة تقدير علمي', sub:'CERTIFICATE OF EXCELLENCE',
+       lines:['لأنه أثبت إن الميكانيكا لعبة عيال في إيده 👏','درجته فوق الـ 85% وكسر الدنيا']},
+    B:{bg:['#F4F5FB','#EFEDFC'], border:'#94A3B8', inner:'#64748B', emoji:'🎖️',
+       title:'شهادة مجهود محترم', sub:'CERTIFICATE OF GOOD EFFORT',
+       lines:['مجهود يُحترم فعلًا، بس فيه أحسن من كدا 💪','المرة الجاية هدفنا الـ A يا بطل']},
+    C:{bg:['#FDEDEA','#FFF7E6'], border:'#E17055', inner:'#C0563B', emoji:'🧻',
+       title:'شهادة التعاطف المجتمعي', sub:'CERTIFICATE OF... WELL, TRYING',
+       lines:['لأنه دخل الامتحان وخرج منه بنفس الشكل 😅','قرار مجلس الجامعة: المادة هتشيله قبل ما يشيلها','نصيحة أخوية: راجع الفصل الأول والتاني من جديد 📚']}
+  }[gKey];
+
+  // الخلفية
+  const g = x.createLinearGradient(0,0,1000,720);
+  g.addColorStop(0,T.bg[0]); g.addColorStop(1,T.bg[1]);
+  x.fillStyle = g;
+  roundRect(x,0,0,1000,720,28); x.fill();
+
+  // الإطار الخارجي والداخلي
+  x.strokeStyle = T.border; x.lineWidth = 12;
+  roundRect(x,18,18,964,684,22); x.stroke();
+  x.strokeStyle = T.inner; x.lineWidth = 2.5;
+  roundRect(x,42,42,916,636,16); x.stroke();
+
+  function roundRect(c,a,b,w,h,r){c.beginPath();c.moveTo(a+r,b);c.arcTo(a+w,b,a+w,b+h,r);c.arcTo(a+w,b+h,a,b+h,r);c.arcTo(a,b+h,a,b,r);c.arcTo(a,b,a+w,b,r);c.closePath();}
+
+  x.textAlign = 'center';
+
+  // الإيموجي
+  x.font = '78px serif';
+  x.fillText(T.emoji, 500, 132);
+
+  // العنوان
+  x.fillStyle = T.inner;
+  x.font = '900 52px Cairo, sans-serif';
+  x.fillText(T.title, 500, 212);
+  x.font = '700 21px Outfit, sans-serif';
+  x.fillStyle = '#8B8FA3';
+  x.fillText(T.sub, 500, 250);
+
+  // خط فاصل
+  x.strokeStyle = T.border; x.lineWidth = 3;
+  x.beginPath(); x.moveTo(300,280); x.lineTo(700,280); x.stroke();
+
+  // تُمنح إلى
+  x.fillStyle = '#64748B';
+  x.font = '700 24px Cairo, sans-serif';
+  x.fillText('تُمنح هذه الشهادة إلى', 500, 336);
+
+  // الاسم
+  x.fillStyle = '#0F172A';
+  x.font = '900 62px Cairo, sans-serif';
+  x.fillText(name, 500, 416);
+
+  // الدرجة
+  x.fillStyle = T.inner;
+  x.font = '800 30px Outfit, Cairo, sans-serif';
+  x.fillText(pct + '%  —  Grade ' + gKey, 500, 470);
+
+  // الأسطر الكوميدية
+  x.fillStyle = '#475569';
+  x.font = '700 25px Cairo, sans-serif';
+  T.lines.forEach((l,i)=> x.fillText(l, 500, 530 + i*42));
+
+  // التاريخ والتوقيع
+  const d = new Date();
+  const date = d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear();
+  x.font = '700 20px Cairo, sans-serif';
+  x.fillStyle = '#94A3B8';
+  x.textAlign = 'right'; x.fillText('التاريخ: ' + date, 890, 666);
+  x.textAlign = 'left';  x.fillText('إدارة الامتحانات — د. طنطاوي 😂', 110, 666);
+  x.textAlign = 'center';
+
+  box.appendChild(cv);
+
+  // زرار التحميل
+  const act = document.createElement('div');
+  act.className = 'cert-actions';
+  const btn = document.createElement('button');
+  btn.className = 'btn sm';
+  btn.textContent = '⬇️ حمّل الشهادة';
+  btn.onclick = ()=>{
+    const a = document.createElement('a');
+    a.download = 'certificate-' + (name.replace(/\s+/g,'-')) + '.png';
+    a.href = cv.toDataURL('image/png');
+    a.click();
+  };
+  act.appendChild(btn);
+  box.appendChild(act);
+}
+
+function fireConfetti(){
+  const cv = document.getElementById('confetti'), ctx = cv.getContext('2d');
+  cv.width = innerWidth; cv.height = innerHeight;
+  const colors = ['#6C5CE7','#00B894','#FDCB6E','#E17055','#74B9FF','#FD79A8'];
+  const ps = Array.from({length:160},()=>({
+    x:Math.random()*cv.width, y:-20-Math.random()*cv.height*0.4,
+    w:6+Math.random()*7, h:8+Math.random()*10,
+    vy:2+Math.random()*3.5, vx:-1.5+Math.random()*3,
+    rot:Math.random()*Math.PI, vr:-0.12+Math.random()*0.24,
+    col:colors[Math.floor(Math.random()*colors.length)]
+  }));
+  let frames=0;
+  (function tick(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    ps.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot);
+      ctx.fillStyle=p.col; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore(); });
+    if(++frames<380) requestAnimationFrame(tick); else ctx.clearRect(0,0,cv.width,cv.height);
+  })();
+}
+
+/* GSAP (optional enhancement) */
+const gs = document.createElement('script');
+gs.src='https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js';
+gs.onload = ()=>{ window.gsap && gsap.from('.hero > *',{opacity:0,y:20,duration:.5,stagger:.08,ease:'back.out(1.4)'}); };
+document.head.appendChild(gs);
+</script>
+</body>
+</html>
